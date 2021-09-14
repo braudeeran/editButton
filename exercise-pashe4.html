@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Exercise phase 1
+    </title>
+    <style>
+        body {
+            padding: 30px;
+        }
+        
+        .property-value-pair span {
+            min-width: 100px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .property-value-pair select,
+        .property-value-pair input {
+            display: inline-block
+        }
+        
+        table {
+            border: 1px solid gray;
+        }
+        
+        tr {
+            border: 1px solid gray;
+        }
+        
+        td {
+            padding: 3px 5px;
+            border-right: 1px solid gray;
+        }
+        
+        img {
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form>
+        <div class="property-value-pair">
+            <span class="caption">id</span>
+            <input type="text" name="id" />
+        </div>
+        <div class="property-value-pair">
+            <span class="caption">First Name</span>
+            <input type="text" name="firstName" />
+        </div>
+        <div class="property-value-pair">
+
+            <span class="caption">Last Name</span>
+            <input type="text" name="laststName" />
+        </div>
+        <div class="property-value-pair">
+
+            <span class="caption">Profile Url</span>
+            <input type="text" name="profileUrl" id='url' />
+        </div>
+        <div class="property-value-pair">
+            <span class="caption">Gender</span>
+            <input type="radio" id="male" name="gender" value="male" /> <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="female" /> <label for="female">Female</label>
+        </div>
+        <div class="property-value-pair">
+            <span class="caption">hobi</span>
+            <select name="hobi">
+                <option>
+                    Select Hobi
+                </option>
+                <option value="biking">
+                    Biking
+                </option>
+                <option value="running">
+                    Running
+                </option>
+                <option value="swimming">
+                    Swimming
+                </option>
+            </select>
+        </div>
+        <button onclick="add()">Add</button>
+        <input type="reset">
+    </form>
+    <div class="list">
+    </div>
+    <button></button>
+    <script>
+        const persons = []
+
+
+        const properties = [
+            'id',
+            'firstName',
+            'laststName',
+            'gender',
+            'hobi',
+            'profileUrl',
+        ]
+
+        function add() {
+            event.preventDefault() //Please ignore for now
+            const person = {}
+            const form = document.querySelector('form')
+            for (let prop of properties) {
+
+                person[prop] = form.elements[prop].value
+            }
+            persons.push(person)
+            console.log(persons)
+            renderTable(persons)
+        }
+        //<td>David</td>
+        function createTd(text) {
+            const td = document.createElement('td')
+            td.innerHTML = text
+            return td
+        }
+
+
+        function createImage(src) {
+            const img = document.createElement('img')
+            img.src = src
+            return img
+        }
+
+        function createTr(obj) {
+            const tr = document.createElement('tr')
+                //<tr><td>124</td><td>David</td>....</tr>
+            for (let prop in obj) { //
+                let td
+                if (prop === 'profileUrl') {
+                    const img = createImage(obj[prop])
+                    td = createTd('')
+                    td.appendChild(img)
+                } else {
+                    td = createTd(obj[prop])
+                }
+                tr.appendChild(td)
+            }
+            //tr
+            return tr
+        }
+
+        // const button = document.createElement('button')
+        // button.onclick = "edit(" + id + ")"
+
+        // function edit(id) {
+
+        // }
+
+        function createTableHeader() {
+            const titles = {
+                id: 'id',
+                firstName: 'firstName',
+                laststName: 'laststName',
+                gender: 'gender',
+                hobi: 'hobi',
+                ProfileUrl: 'profileUrl',
+            }
+            const tableHeader = createTr(titles)
+            return tableHeader
+        }
+
+
+        function emptyTd(id) {
+            const td = document.createElement('td')
+            td.innerHTML = "<button onclick='edit(" + id + ")'>Edit</button>"
+            return td
+        }
+
+        function edit(id) {
+            const form = document.querySelector('form')
+            let myList = document.querySelectorAll("#" + id + " td");
+            for (let i = 0; i < myList.length; i++) {
+                if (properties[i] === 'profileUrl') {
+                    let myUrl = document.querySelector('td img').getAttribute('src');
+                    form.elements[properties[i]].value = myUrl;
+
+                } else {
+
+                    form.elements[properties[i]].value = myList[i].textContent;
+                }
+            }
+
+        }
+
+        function createTable(listOfObjects) {
+            const table = document.createElement('table')
+            const tableHeader = createTableHeader()
+            table.appendChild(tableHeader)
+            for (let i = 0; i < listOfObjects.length; i = i + 1) {
+                const tr = createTr(listOfObjects[i])
+                table.appendChild(tr)
+                let changer = 'person' + i
+                tr.setAttribute('id', changer);
+                tr.appendChild(emptyTd('"' + changer + '"'));
+            }
+            return table
+        }
+
+
+        function renderTable() {
+            const table = createTable(persons)
+            const container = document.querySelector('div.list')
+            container.innerHTML = ''
+            container.appendChild(table)
+        }
+        renderTable()
+    </script>
+    <!-- Now lets do it with button -->
+
+</body>
+
+</html>
